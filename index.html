@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🧠 AI Smart Calculator Hub</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/decimal.js/10.4.3/decimal.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{margin:0;padding:20px;font-family:'Segoe UI',Arial,sans-serif;background:radial-gradient(ellipse at center,#0a0f2a 0%,#03050b 100%);color:white;display:flex;justify-content:center;align-items:center;min-height:100vh;text-align:center;flex-direction:column;position:relative;overflow-x:hidden}
+.stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.star{position:absolute;background:white;border-radius:50%;animation:moveUp linear infinite}
+@keyframes moveUp{0%{transform:translateY(100vh)}100%{transform:translateY(-20vh)}}
+.container{max-width:400px;width:90%;margin:auto;position:relative;z-index:1}
+.hidden{display:none}
+button,.btn,.menu-btn{padding:14px 24px;margin:8px;border-radius:12px;color:white;background:rgba(255,182,193,0.7);cursor:pointer;transition:0.2s;font-size:1em}
+button:hover,.btn:hover,.menu-btn:hover{transform:scale(1.05);background:rgba(255,182,193,0.9)}
+input{padding:10px;width:80%;border-radius:12px;text-align:center;margin:5px;font-size:1em}
+.result,.explain{margin:10px;font-size:1em}
+</style>
+</head>
+<body>
+
+<div class="stars" id="starsContainer"></div>
+<div class="container">
+
+<!-- Welcome -->
+<div id="welcome">
+<h1>🧠 AI Smart Calculator Hub</h1>
+<p>Welcome to the ultimate calculator for:  
+📐 Math, ⚛️ Physics, 🧩 Puzzles, 🏗️ 3D Shapes. Start exploring now!</p>
+<button id="startBtn">🚀 Start</button>
+</div>
+
+<!-- Menu -->
+<div id="menu" class="hidden">
+<h2>🛠️ Select Mode</h2>
+<button onclick="showPage('math')">📐 Math</button>
+<button onclick="showPage('physics')">⚛️ Physics</button>
+<button onclick="showPage('puzzle')">🧩 Puzzle</button>
+<button onclick="showPage('ai3d')">🏗️ 3D & AI</button>
+</div>
+
+<!-- Physics -->
+<div id="physics" class="hidden">
+<h2>⚛️ Physics Calculator</h2>
+<select id="physicsSelect" onchange="showPhysicsFields()">
+  <option value="">🔹 Select Law</option>
+  <option value="Force">💪 Force (F = m × a)</option>
+  <option value="Pressure">⚖️ Pressure (P = F / A)</option>
+  <option value="Kinetic Energy">🏃 Kinetic Energy (KE = 1/2 m v²)</option>
+  <option value="Potential Energy">🗻 Potential Energy (PE = m g h)</option>
+  <option value="Work">🔨 Work (W = F × d)</option>
+  <option value="Power">⚡ Power (P = W / t)</option>
+  <option value="Momentum">🏎️ Momentum (p = m × v)</option>
+  <option value="Velocity">💨 Velocity (v = d / t)</option>
+  <option value="Acceleration">⏱️ Acceleration (a = Δv / t)</option>
+  <option value="Hooke Law">🪢 Hooke Law (F = k × x)</option>
+  <option value="Coulomb Law">⚡ Coulomb Law (F = k q1 q2 / r²)</option>
+  <option value="Ohm Law">🔌 Ohm Law (V = I × R)</option>
+  <option value="Density">🌊 Density (ρ = m / V)</option>
+  <option value="Gravitational Potential">🌌 Gravitational Potential (U = G m1 m2 / r)</option>
+  <option value="Wave Speed">🌊 Wave Speed (v = f × λ)</option>
+</select>
+<div id="physicsInputs"></div>
+<div id="physicsResult" class="result">Result: ---</div>
+<button onclick="showPage('menu')">⬅️ Back</button>
+</div>
+
+<!-- Puzzle -->
+<div id="puzzle" class="hidden">
+<h2>🧩 Puzzle Game</h2>
+<select id="puzzleLevel">
+  <option value="">🎯 Select Difficulty</option>
+  <option value="easy">😎 Easy</option>
+  <option value="medium">🤔 Medium</option>
+  <option value="hard">😱 Hard</option>
+</select>
+<button onclick="startPuzzle()">🚀 Start Game</button>
+<div id="puzzleQuestion">Question will appear here</div>
+<div id="puzzleOptions"></div>
+<div id="puzzleScore">Score: 0</div>
+<button onclick="showPage('menu')">⬅️ Back</button>
+</div>
+
+<!-- 3D & AI -->
+<div id="ai3d" class="hidden">
+<h2>🏗️ 3D & AI Calculator</h2>
+<input id="aiInput" placeholder="cube 3 or sphere 5 or cone 4 or pyramid 4">
+<select id="shapeSelect">
+  <option value="volume">📦 Volume</option>
+  <option value="surface">📐 Surface Area</option>
+</select>
+<button onclick="solveAI()">⚡ Calculate</button>
+<div id="aiRes" class="result">Result: ---</div>
+<div id="aiExplain" class="explain">Explanation: ---</div>
+<button onclick="showPage('menu')">⬅️ Back</button>
+</div>
+
+</div>
+
+<script>
+// stars animation
+for(let i=0;i<30;i++){
+  let s=document.createElement('div');
+  s.className='star';
+  s.style.width='2px';
+  s.style.height='2px';
+  s.style.left=Math.random()*100+'%';
+  s.style.animationDuration=(Math.random()*5+5)+'s';
+  document.getElementById('starsContainer').appendChild(s);
+}
+
+// navigation
+function showPage(p){
+  ['menu','math','physics','puzzle','ai3d'].forEach(id=>{
+    document.getElementById(id).classList.add('hidden');
+  });
+  document.getElementById(p).classList.remove('hidden');
+}
+
+// start button
+document.getElementById('startBtn').onclick=()=>{
+  document.getElementById('welcome').classList.add('hidden');
+  document.getElementById('menu').classList.remove('hidden');
+};
+</script>
+</body>
+</html>
